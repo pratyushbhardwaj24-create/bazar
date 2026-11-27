@@ -8,6 +8,7 @@ Static site for the Maa Enterprises tile and marble showroom on MG Road, Auranga
 - **Range**: procedural tile sample boards with filters, "Try in 3D room", and a shortlist kept in the browser that you can share.
 - **360° storefront** (Three.js panorama viewer) plus a photo strip from the Google Maps listing.
 - **Tile calculator**: room size, tile size and wastage give you the number of boxes.
+- **Write a Google review**: a button and a QR code that open Google's write-review page for the shop (Place ID `ChIJ7dqHRFn9jDkR5fttxlaj4ek`), a copy-link button for WhatsApp, and a downloadable QR card to print for the counter.
 - **Reviews, live open/closed status (IST), hours, Google Map embed, FAQ.**
 
 ## SEO
@@ -33,5 +34,6 @@ Then open http://localhost:3003 (any free port works).
 - `js/textures.js`: canvas-drawn tile and marble textures and tile laying
 - `js/room3d.js`: the 3D room
 - `js/pano.js`: the 360° viewer
-- `js/main.js`: UI wiring (swatches, range, shortlist, calculator, hours)
+- `js/main.js`: UI wiring (swatches, range, shortlist, calculator, hours, review QR)
+- `js/vendor/qrcode.min.js`: qrcode-generator 1.4.4 (MIT), bundled so the QR works offline
 - `assets/photos/`: photos from the shop's Google Maps listing

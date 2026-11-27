@@ -383,3 +383,81 @@ const navObserver = new IntersectionObserver((entries) => {
   }
 }, { rootMargin: '-45% 0px -50% 0px' });
 sections.forEach((s) => s && navObserver.observe(s));
+
+/* ---------- Write a Google review: button, copy link, QR ---------- */
+const REVIEW_URL = $('[data-review-link]').href;
+const qrBox = $('[data-qr]');
+let qrSvg = '';
+
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.append(s);
+  });
+}
+
+// Build the QR as our own SVG path so it uses the brand colour and scales crisply.
+function qrPath(url) {
+  const qr = window.qrcode(0, 'M');
+  qr.addData(url);
+  qr.make();
+  const n = qr.getModuleCount();
+  let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+  return { d, n };
+}
+
+function qrMarkup(url, { label = false } = {}) {
+  const { d, n } = qrPath(url);
+  const pad = 2;
+  const size = n + pad * 2;
+  if (!label) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges" role="img" aria-label="QR code for writing a Google review"><rect width="${size}" height="${size}" fill="#fff"/><path transform="translate(${pad} ${pad})" fill="#1c2b5a" d="${d}"/></svg>`;
+  }
+  // printable counter card, 600 x 820 units
+  const s = 440 / n;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="820" viewBox="0 0 600 820">
+  <rect width="600" height="820" rx="28" fill="#1c2b5a"/>
+  <text x="300" y="92" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#fff">Maa Enterprises</text>
+  <text x="300" y="134" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="#c8cfe4">Tiles &amp; marble, MG Road, Aurangabad</text>
+  <rect x="60" y="170" width="480" height="480" rx="18" fill="#fff"/>
+  <path transform="translate(80 190) scale(${s})" fill="#1c2b5a" shape-rendering="crispEdges" d="${d}"/>
+  <text x="300" y="712" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700" font-size="30" fill="#fff">Scan to review us on Google</text>
+  <text x="300" y="760" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#c2913e" letter-spacing="6">★★★★★</text>
+</svg>`;
+}
+
+// Library is bundled locally (js/vendor), so the code is ready as soon as the page is idle.
+(window.requestIdleCallback || ((f) => setTimeout(f, 200)))(async () => {
+  try {
+    await loadScript('js/vendor/qrcode.min.js');
+    qrSvg = qrMarkup(REVIEW_URL);
+    qrBox.innerHTML = qrSvg;
+  } catch {
+    qrBox.textContent = 'QR code could not load. Use the button instead.';
+  }
+});
+
+$('[data-copy-review]').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(REVIEW_URL);
+    toast('Review link copied. Paste it into WhatsApp for your customers.');
+  } catch {
+    prompt('Copy this link:', REVIEW_URL);
+  }
+});
+
+$('[data-qr-download]').addEventListener('click', () => {
+  if (!window.qrcode) { toast('QR code is still loading'); return; }
+  const blob = new Blob([qrMarkup(REVIEW_URL, { label: true })], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'maa-enterprises-google-review-qr.svg';
+  document.body.append(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});

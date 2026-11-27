@@ -58,7 +58,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 48px; padding: 0 22px; border-radius: 6px;
-  font-weight: 600; text-decoration: none; border: 1.5px solid transparent;
+  font-weight: 600; text-decoration: none; border: 1.5px solid transparent; background: transparent;
   transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
 }
 .btn:active { transform: translateY(1px); }
@@ -236,6 +236,31 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .quotes blockquote { margin: 0; font-family: var(--display); font-size: var(--step-1); color: var(--ink); }
 .quotes cite { display: block; margin-top: 8px; font-style: normal; font-size: var(--step--1); color: var(--ink-2); }
 @media (max-width: 760px) { .reviews .wrap { grid-template-columns: 1fr; } }
+
+/* Write a review */
+.write { grid-column: 1 / -1; margin-top: clamp(24px, 4vw, 48px); background: var(--lapis); color: #dfe4f3; border-radius: 16px; padding: clamp(22px, 4vw, 44px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(20px, 4vw, 56px); align-items: center; }
+.write__title { font-size: var(--step-2); color: var(--white); max-width: 20ch; }
+.write__hindi { font-family: var(--hindi); color: #9fd3c5; margin: 8px 0 14px; font-size: var(--step-1); }
+.write__copy > p:not(.write__hindi) { max-width: 52ch; }
+.write__steps { margin: 16px 0 0; padding-left: 1.3em; display: grid; gap: 4px; font-size: var(--step--1); }
+.write__steps li::marker { color: var(--brass); font-weight: 700; }
+.write__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+.write__cta .btn--ghost { color: var(--white); }
+.write__cta .btn--ghost:hover { background: rgba(255, 255, 255, .08); }
+.g-icon { width: 18px; height: 18px; }
+.write__qr { margin: 0; background: var(--white); color: var(--ink); border-radius: 12px; padding: 16px 16px 12px; text-align: center; width: 220px; }
+.qr { width: 188px; height: 188px; margin: 0 auto; display: grid; place-items: center; background: var(--marble); border-radius: 6px; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.write__qr figcaption { font-weight: 600; font-size: var(--step--1); margin-top: 8px; color: var(--lapis); }
+.write__dl { margin-top: 6px; border: 0; background: none; color: var(--jade-2); font-size: 0.8rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; padding: 4px; }
+@media (max-width: 760px) {
+  .write { grid-template-columns: 1fr; }
+  .write__qr { justify-self: start; }
+}
+@media (max-width: 560px) and (pointer: coarse) {
+  /* on a phone the button is the way in; the code is for other devices */
+  .write__qr { display: none; }
+}
 
 /* Visit */
 .visit { padding: clamp(56px, 8vw, 110px) 0; }
